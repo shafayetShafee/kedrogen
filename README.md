@@ -1,6 +1,6 @@
 # kedrogen
 
-A package providing a cli tool `kedrogen` that will generate a Kedro Cookiecutter project in the current directory
+A simple CLI command that generate a Kedro project from a cookiecutter template in the current directory.
 
 ## Installation
 
@@ -8,7 +8,20 @@ A package providing a cli tool `kedrogen` that will generate a Kedro Cookiecutte
   
 ## Usage
 
-- TODO
+```console
+$ kedrogen [OPTIONS] TEMPLATE
+```
+
+**Arguments**:
+
+* `TEMPLATE`: Path to the Cookiecutter template folder.  [required]
+
+**Options**:
+
+* `--install-completion`: Install completion for the current shell.
+* `--show-completion`: Show completion for the current shell, to copy it or customize the installation.
+* `--help`: Show this message and exit.
+
 
 ## Contributing
 
