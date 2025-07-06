@@ -1,4 +1,5 @@
 import re
+import json
 import shutil
 from pathlib import Path
 from importlib.metadata import version, PackageNotFoundError
@@ -67,6 +68,30 @@ def move_contents(src_dir: Path, dest_dir: Path):
         print(f"[yellow][!] Could not remove [bold]'{src_dir}'[/bold]. Reason:[/yellow] {e}")
 
 
+def build_extra_context(template_path: Path, fixed_context: dict) -> dict:
+    """Load cookiecutter.json and merge user-controlled fields into extra_context."""
+    cookiecutter_json = template_path / "cookiecutter.json"
+
+    if not cookiecutter_json.exists():
+        print(f"[red][x] [bold]cookiecutter.json[/bold] not found at: {cookiecutter_json}[/red]")
+        raise typer.Exit(code=1)
+
+    try:
+        template_context = json.loads(cookiecutter_json.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        print(f"[red][x] Invalid JSON in [bold]cookiecutter.json[/bold]: {e}[/red]")
+        raise typer.Exit(code=1)
+
+    fixed_keys = fixed_context.keys()
+
+    dynamic_context = {
+        key: None for key in template_context.keys() if key not in fixed_keys
+    }
+
+    full_context = {**dynamic_context, **fixed_context}
+    return full_context
+
+
 @app.command()
 def generate(
     template: Path = typer.Argument(
@@ -81,12 +106,14 @@ def generate(
     print(f"[blue][✔] Setting project name from current directory name as:[/blue] '[bold green]{current_dir}[/bold green]'")
     print(f"[blue][✔] Detected Kedro version:[/blue] [bold green]{kedro_version}[/bold green]")
 
-    extra_context = {
+    fixed_context = {
         "project_name": current_dir.strip().replace("-", " ").replace("_", " ").title(),
         "repo_name": current_dir,
         "python_package": current_dir.strip().replace("-", "_").lower() + "_kedro",
         "kedro_version": kedro_version
     }
+
+    extra_context = build_extra_context(template, fixed_context)
 
     try:
         result_path = cookiecutter(
