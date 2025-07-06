@@ -1,7 +1,7 @@
 [project]
 name = "kedrogen"
-version = "0.1.0"
-description = ""
+version = "0.0.9"
+description = "A simple CLI command that generate a Kedro project from a cookiecutter template in the current directory"
 authors = [
     {name = "Shafayet Khan Shafee", email = "sshafee@isrt.ac.bd"}
 ]
