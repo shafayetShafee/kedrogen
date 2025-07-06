@@ -1,0 +1,24 @@
+[project]
+name = "kedrogen"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Shafayet Khan Shafee", email = "sshafee@isrt.ac.bd"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "typer (>=0.16.0,<0.17.0)",
+    "kedro (>=0.19.14,<0.20.0)"
+]
+
+[project.scripts]
+kedrogen = 'kedrogen.main:app'
+
+[tool.poetry]
+packages = [{include = "kedrogen", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
