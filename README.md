@@ -4,7 +4,9 @@ A simple CLI command that generate a Kedro project from a cookiecutter template 
 
 ## Installation
 
-- TODO
+```console
+pip install kedrogen
+```
   
 ## Usage
 
