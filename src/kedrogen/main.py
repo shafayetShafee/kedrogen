@@ -79,7 +79,7 @@ def move_contents(src_dir: Path, dest_dir: Path, logger: Logger):
             shutil.move(str(item), str(dest_item))
             logger.debug(f"[blue][✔] Moved:[blue] [bold green]'{item.name}'[/bold green]")
         except Exception as e:
-            logger.error(f"[red]\[x] Failed to move [bold]'{item.name}'[/bold]: {e}[/red]")
+            logger.error(f"[red][x] Failed to move [bold]'{item.name}'[/bold]: {e}[/red]")
 
     try:
         shutil.rmtree(src_dir)
