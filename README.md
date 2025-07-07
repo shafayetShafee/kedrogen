@@ -18,6 +18,8 @@ $ kedrogen [OPTIONS] TEMPLATE
 
 **Options**:
 
+* `-v, --verbose`: Show detailed output.
+* `-q, --quiet`: Suppress all non-error messages.
 * `--install-completion`: Install completion for the current shell.
 * `--show-completion`: Show completion for the current shell, to copy it or customize the installation.
 * `--help`: Show this message and exit.
