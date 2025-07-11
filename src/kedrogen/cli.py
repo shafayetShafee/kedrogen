@@ -2,17 +2,25 @@ import shutil
 from pathlib import Path
 
 import typer
+from cookiecutter.config import get_user_config
+from cookiecutter.repository import determine_repo_dir
+from cookiecutter.utils import force_delete
 from cookiecutter.main import cookiecutter
 
 from kedrogen import __version__
 from kedrogen.logger import Logger
 from kedrogen.project_utils import get_current_dir_name, validate_dirname, get_kedro_version
-from kedrogen.template_utils import build_extra_context, validate_template_source
+from kedrogen.template_utils import build_context
 
 
 def prompt_overwrite(file_path: Path) -> bool:
     return typer.confirm(f"'{file_path}' already exists. Overwrite?", default=None, show_default=True)
 
+def format_colored_dict(d: dict) -> str:
+    lines = []
+    for key, value in d.items():
+        lines.append(f"  [magenta]{key}[/magenta]: [green]{repr(value)}[/green]")
+    return "{\n" + ",\n".join(lines) + "\n}"
 
 def move_contents(src_dir: Path, dest_dir: Path, logger: Logger):
     if not src_dir.is_dir():
@@ -25,7 +33,7 @@ def move_contents(src_dir: Path, dest_dir: Path, logger: Logger):
             if dest_item.exists():
                 if prompt_overwrite(dest_item):
                     if dest_item.is_dir():
-                        shutil.rmtree(dest_item)
+                        shutil.rmtree(dest_item, onerror=force_delete)
                     else:
                         dest_item.unlink()
                 else:
@@ -38,7 +46,7 @@ def move_contents(src_dir: Path, dest_dir: Path, logger: Logger):
             logger.error(f"[red][x] Failed to move [bold]'{item.name}'[/bold]: {e}[/red]")
 
     try:
-        shutil.rmtree(src_dir)
+        shutil.rmtree(src_dir, onerror=force_delete)
         logger.debug(f"[blue][✔] Removed directory:[blue] [green]{src_dir}[/green]")
     except Exception as e:
         logger.warn(f"[yellow][!] Could not remove [bold]'{src_dir}'[/bold]. Reason:[/yellow] {e}")
@@ -47,14 +55,19 @@ def move_contents(src_dir: Path, dest_dir: Path, logger: Logger):
 def raise_exit():
     raise typer.Exit(code=1)
 
+app = typer.Typer(
+    help="Generate a Kedro project from a cookiecutter template in the current directory"
+)
 
-
+@app.command()
 def generate(
-    template: str = typer.Argument(..., help="Path or Git URL of the Cookiecutter template."),
+    template_path: str = typer.Argument(..., help="Path or Git URL of the Cookiecutter template."),
     verbose: bool = typer.Option(False, "--verbose", help="Show detailed output."),
     quiet: bool = typer.Option(False, "--quiet", "-q", help="Suppress all non-error messages."),
     version: bool = typer.Option(False, "--version", help="Show the version and exit.", is_eager=True)
 ):
+    logger = Logger(verbose=verbose, quiet=quiet)
+
     if version:
         logger.info(f"kedrogen v{__version__}")
         raise typer.Exit()
@@ -62,8 +75,6 @@ def generate(
     if verbose and quiet:
         print("[red][x] Cannot use both --verbose and --quiet together.[/red]")
         raise typer.Exit(code=1)
-
-    logger = Logger(verbose=verbose, quiet=quiet)
 
     current_dir = get_current_dir_name()
     validate_dirname(current_dir, logger)
@@ -79,30 +90,46 @@ def generate(
         "kedro_version": kedro_version
     }
 
-    validated_template = validate_template_source(template, logger=logger)
-
-    template_path_for_context = Path(validated_template) if Path(validated_template).exists() else None
-
-    extra_context = (
-        build_extra_context(template_path_for_context, fixed_context, logger=logger)
-        if template_path_for_context else fixed_context
-    )
-
-
     try:
-        result_path = cookiecutter(
-            template,
+        config_dict = get_user_config(None, False)
+    except Exception as e:
+        logger.error(f"[red][x] {e}[/red]")
+        raise typer.Exit(code=1)
+    
+    try:
+        base_repo_dir, _ = determine_repo_dir(
+            template=template_path,
+            abbreviations=config_dict['abbreviations'],
+            clone_to_dir=config_dict['cookiecutters_dir'],
+            checkout=None,
             no_input=True,
-            extra_context=extra_context
+            password=None,
+            directory=None
         )
-        move_contents(Path(result_path), Path.cwd(), logger)
-        logger.info(f"\n[green]✅ Project [bold]`{current_dir}`[/bold] generated successfully in the current directory![/green]")
+        logger.debug(f"[blue][✔] Cloned the project contents to:[blue] [bold green]'{base_repo_dir}'[/bold green]")
     except Exception as e:
         logger.error(f"[red][x] {e}[/red]")
         raise typer.Exit(code=1)
 
+    extra_context = build_context(Path(base_repo_dir), fixed_context, logger=logger)
+    logger.debug(f"[blue][✔] Using the cookiecutter context:[/blue] {format_colored_dict(fixed_context)}")
 
-app = typer.Typer(
-    callback=generate, 
-    help="Generate a Kedro project from a cookiecutter template in the current directory"
-)
+    try:
+        result_path = cookiecutter(
+            str(base_repo_dir),
+            no_input=True,
+            extra_context=extra_context
+        )
+
+        try:
+            shutil.rmtree(base_repo_dir, onerror=force_delete)
+        except Exception as e:
+            logger.error(f"[red][x] {e}[/red]")
+            raise typer.Exit(code=1)
+        
+        move_contents(Path(result_path), Path.cwd(), logger)
+        logger.info(f"\n[green]✅ Project [bold]`{current_dir}`[/bold] generated successfully in the current directory![/green]")
+    
+    except Exception as e:
+        logger.error(f"[red][x] {e}[/red]")
+        raise typer.Exit(code=1)
