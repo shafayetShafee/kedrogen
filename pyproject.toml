@@ -64,8 +64,9 @@ extend-select = [
     "B",   # flake8-bugbear
 ]
 ignore = [
-    "E501",  # line too long
-    "C901",  # too complex
+    "E501",    # line too long
+    "C901",    # too complex
+    "PLR0913", # too many function args
 ]
 
 [tool.ruff.lint.isort]
