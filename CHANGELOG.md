@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Planned
 - Support for `--checkout`, `--directory`, `--telemetry` flags, similar to `kedro new`
+- Suppport for `--passoword` flag same as cookiecutter.
+- Support for adding tools using `--tools`, same as `kedro new`
 
 ---
 
