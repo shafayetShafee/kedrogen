@@ -143,3 +143,6 @@ dmypy.json
 
 # test files
 help*
+
+# ruff cache
+.ruff_cache
