@@ -1,8 +1,9 @@
 import re
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from importlib.metadata import version, PackageNotFoundError
 
 import typer
+
 from kedrogen.logger import Logger
 
 

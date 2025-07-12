@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 from typer import Exit
+
 from kedrogen.logger import Logger
 
 

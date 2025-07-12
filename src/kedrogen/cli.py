@@ -1,21 +1,20 @@
 import shutil
 from pathlib import Path
-from typing import Optional
-from typing_extensions import Annotated
+from typing import Annotated, Optional
 
 import typer
-from rich import print
 from cookiecutter.config import get_user_config
+from cookiecutter.main import cookiecutter
 from cookiecutter.repository import determine_repo_dir
 from cookiecutter.utils import force_delete
-from cookiecutter.main import cookiecutter
+from rich import print
 
 from kedrogen import __version__
 from kedrogen.logger import Logger
 from kedrogen.project_utils import (
     get_current_dir_name,
-    validate_dirname,
     get_kedro_version,
+    validate_dirname,
 )
 from kedrogen.template_utils import build_context
 
