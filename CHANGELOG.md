@@ -10,9 +10,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Support for `--checkout`, `--directory`, `--telemetry` flags, similar to `kedro new`
-- Suppport for `--passoword` flag same as cookiecutter.
-- Support for adding tools using `--tools`, same as `kedro new`
+- Add support for `--tools` flag, similar to `kedro new`.
+- Use a default Kedro cookiecutter template if `template_path` is not provided.
+- Add `--telemetry` flag support.
+
+---
+
+## [0.3.0] - 2025-07-13
+
+### Added
+- **New CLI flags**  
+  - `--checkout`: specify the Git branch, tag, or commit to use when cloning the template.
+  - `--directory`: specify An optional directory inside the repository to use as the template, that is,
+                   the directory within the repository where `cookiecutter.json` lives.
+  - `--password`: pass a password to use when extracting a password protected zipfile.
+
+- **Improved CLI Help Text**  
+  Enhanced descriptions for all CLI flags for clarity and consistency.
+
+### Changed
+- **Internal refactor**  
+  Restructured the internal module layout for better readability and maintainability.
 
 ---
 
