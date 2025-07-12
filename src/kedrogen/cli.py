@@ -4,6 +4,7 @@ from typing import Optional
 from typing_extensions import Annotated
 
 import typer
+from rich import print
 from cookiecutter.config import get_user_config
 from cookiecutter.repository import determine_repo_dir
 from cookiecutter.utils import force_delete
@@ -54,12 +55,16 @@ def move_contents(src_dir: Path, dest_dir: Path, logger: Logger):
         logger.warn(f"[yellow][!] Could not remove [bold]'{src_dir}'[/bold]. Reason:[/yellow] {e}")
 
 
-def raise_exit():
-    raise typer.Exit(code=1)
+def version_callback(value: bool):
+    if value:
+        print(f"[blue]kedrogen version:[/blue] [bold magenta]{__version__}[/bold magenta]")
+        raise typer.Exit()
+
 
 app = typer.Typer(
     help="Generate a Kedro project from a cookiecutter template in the current directory"
 )
+
 
 @app.command()
 def generate(
@@ -77,14 +82,15 @@ def generate(
     ] = False,
     version: Annotated[
         Optional[bool],
-        typer.Option("--version", help="Show the version and exit.", is_eager=True)
+        typer.Option(
+            "--version", "-v",
+            help="Show the version and exit.", 
+            callback=version_callback,
+            is_eager=True
+        )
     ] = None
 ):
     logger = Logger(verbose=verbose, quiet=quiet)
-
-    if version:
-        logger.info(f"kedrogen v{__version__}")
-        raise typer.Exit()
     
     if verbose and quiet:
         print("[red][x] Cannot use both --verbose and --quiet together.[/red]")
