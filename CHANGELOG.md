@@ -10,8 +10,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Support for remote Git template repositories.
 - Support for `--checkout`, `--directory`, `--telemetry` flags, similar to `kedro new`
+- Suppport for `--passoword` flag same as cookiecutter.
+- Support for adding tools using `--tools`, same as `kedro new`
+
+---
+
+## [0.2.0] 2025-07-12
+
+### Added
+- **Remote template support**  
+  You can now use:
+  - Remote git repository (gitlab, github, bitbucket etc) URLs (e.g. `https://github.com/user/repo`, `gh:user/repo`)
+  - `.zip` archives (local or remote)
+  - `file://` URLs
+  - or, any type of URLs that [cookiecutter supports](https://cookiecutter.readthedocs.io/en/stable/usage.html#works-directly-with-git-and-hg-mercurial-repos-too)
+
+  as valid inputs to the `template_path` argument. `kedrogen` will automatically detect, fetch, and use them.
+
+- **Version flag**  
+  Added a `--version` (or `-v`) option to display the installed version of `kedrogen` directly from the command line.
 
 ---
 
