@@ -1,5 +1,6 @@
 from rich import print
 
+
 class Logger:
     def __init__(self, verbose: bool = False, quiet: bool = False):
         self.verbose = verbose

@@ -14,13 +14,17 @@ def build_context(template_path: Path, fixed_context: dict, logger: Logger) -> d
     base_context_file = template_path / "cookiecutter.json"
 
     if not base_context_file.exists():
-        logger.error(f"[red][x] [bold]cookiecutter.json[/bold] not found at: {base_context_file}[/red]")
+        logger.error(
+            f"[red][x] [bold]cookiecutter.json[/bold] not found at: {base_context_file}[/red]"
+        )
         raise Exit(code=1)
 
     try:
         base_context = json.loads(base_context_file.read_text(encoding="utf-8"))
     except json.JSONDecodeError as e:
-        logger.error(f"[red][x] Invalid JSON in [bold]cookiecutter.json[/bold]: {e}[/red]")
+        logger.error(
+            f"[red][x] Invalid JSON in [bold]cookiecutter.json[/bold]: {e}[/red]"
+        )
         raise Exit(code=1)
 
     fixed_keys = fixed_context.keys()
