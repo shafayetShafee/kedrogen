@@ -18,37 +18,30 @@ from kedrogen.utils import (
     version_callback,
 )
 
-TEMPLATE_PATH_ARG_HELP="""Specify the template to use when creating the project.
+TEMPLATE_PATH_ARG_HELP = """Specify the template to use when creating the project.
 This can be the path to a local directory, a URL to a remote VCS repository supported
 by `cookiecutter` or path to either a local or remote zip file.
 """
-CHECKOUT_ARG_HELP=(
-    "The branch, tag or commit ID to checkout after clone."
-)
-DIRECTORY_ARG_HELP="""An optional directory inside the repository to use as the template, that is,
+CHECKOUT_ARG_HELP = "The branch, tag or commit ID to checkout after clone."
+DIRECTORY_ARG_HELP = """An optional directory inside the repository to use as the template, that is,
 the directory within the repository where cookiecutter.json lives."""
-PASSWORD_ARG_HELP=(
-    "The password to use when extracting a password protected zipfile"
-)
-VERBOSE_ARG_HELP=(
+PASSWORD_ARG_HELP = "The password to use when extracting a password protected zipfile"
+VERBOSE_ARG_HELP = (
     "Enable verbose output to show detailed progress and debug information."
 )
-QUIET_ARG_HELP="Suppress all non-error messages."
-VERSION_ARG_HELP="Show the version and exit."
+QUIET_ARG_HELP = "Suppress all non-error messages."
+VERSION_ARG_HELP = "Show the version and exit."
 
 app = Typer(
     help="Generate a Kedro project from a cookiecutter template in the current directory",
     context_settings={"help_option_names": ["-h", "--help"]},
-    no_args_is_help=True
+    no_args_is_help=True,
 )
 
 
 @app.command()
 def generate(
-    template_path: Annotated[
-        str,
-        Argument(help=TEMPLATE_PATH_ARG_HELP)
-    ],
+    template_path: Annotated[str, Argument(help=TEMPLATE_PATH_ARG_HELP)],
     checkout: Annotated[
         Optional[str],
         Option(
@@ -79,7 +72,7 @@ def generate(
             "--verbose",
             "-vv",
             help=VERBOSE_ARG_HELP,
-        )
+        ),
     ] = False,
     quiet: Annotated[
         Optional[bool],
