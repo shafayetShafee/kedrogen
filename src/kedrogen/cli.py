@@ -1,5 +1,7 @@
 import shutil
 from pathlib import Path
+from typing import Optional
+from typing_extensions import Annotated
 
 import typer
 from cookiecutter.config import get_user_config
@@ -61,10 +63,22 @@ app = typer.Typer(
 
 @app.command()
 def generate(
-    template_path: str = typer.Argument(..., help="Path or Git URL of the Cookiecutter template."),
-    verbose: bool = typer.Option(False, "--verbose", help="Show detailed output."),
-    quiet: bool = typer.Option(False, "--quiet", "-q", help="Suppress all non-error messages."),
-    version: bool = typer.Option(False, "--version", help="Show the version and exit.", is_eager=True)
+    template_path: Annotated[
+        str,
+        typer.Argument(help="Path or Git URL of the Cookiecutter template.")
+    ],
+    verbose: Annotated[
+        Optional[bool],
+        typer.Option("--verbose", help="Show detailed output.")
+    ] = False,
+    quiet: Annotated[
+        Optional[bool],
+        typer.Option("--quiet", "-q", help="Suppress all non-error messages.")
+    ] = False,
+    version: Annotated[
+        Optional[bool],
+        typer.Option("--version", help="Show the version and exit.", is_eager=True)
+    ] = None
 ):
     logger = Logger(verbose=verbose, quiet=quiet)
 
