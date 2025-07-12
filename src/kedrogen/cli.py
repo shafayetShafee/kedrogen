@@ -22,6 +22,7 @@ app = Typer(
     help="Generate a Kedro project from a cookiecutter template in the current directory"
 )
 
+
 @app.command()
 def generate(
     template_path: Annotated[

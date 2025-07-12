@@ -237,4 +237,3 @@ def build_context(template_path: Path, fixed_context: dict, logger: Logger) -> d
 
     context = {**modified_base_context, **fixed_context}
     return context
-
