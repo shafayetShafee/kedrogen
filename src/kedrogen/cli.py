@@ -1,23 +1,22 @@
 from pathlib import Path
 from typing import Annotated, Optional
 
-from typer import Typer, Argument, Option, Exit
 from cookiecutter.config import get_user_config
 from cookiecutter.main import cookiecutter
 from cookiecutter.repository import determine_repo_dir
 from cookiecutter.utils import rmtree
+from typer import Argument, Exit, Option, Typer
 
-from kedrogen.utils import Logger
 from kedrogen.utils import (
-    version_callback,
-    get_current_dir_name,
-    get_kedro_version,
-    validate_dirname,
+    Logger,
     build_context,
     format_colored_dict,
-    move_contents
+    get_current_dir_name,
+    get_kedro_version,
+    move_contents,
+    validate_dirname,
+    version_callback,
 )
-
 
 app = Typer(
     help="Generate a Kedro project from a cookiecutter template in the current directory"

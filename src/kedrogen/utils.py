@@ -3,7 +3,7 @@ import re
 import shutil
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from cookiecutter.utils import force_delete
 from rich import print
@@ -119,7 +119,7 @@ def prompt_overwrite(file_path: Path) -> bool:
     )
 
 
-def format_colored_dict(d: Dict[str, Any]) -> str:
+def format_colored_dict(d: dict[str, Any]) -> str:
     """
     Format a dictionary as a string with Rich-style color formatting.
 
